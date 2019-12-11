@@ -45,7 +45,7 @@ Route::group([
     'prefix' => 'task'
 ], function () {
     Route::delete('delete/{id}', function ($id) {
-        return redirect('/thanhcong/' . $id);
+        return redirect('thanhcong/' . $id);
     })->name('todo.task.delete');
 
     Route::get('complete/3', function () {
@@ -57,3 +57,85 @@ Route::group([
     })->name('todo.task.reset');
 });
 
+//=== buổi 3: view ===
+
+//Route::get('hello1', function (){
+//    return view('hello1');
+//});
+//
+//Route::get('sub/hello1', function (){
+//    return view('hello.hello1');
+//});
+
+//Route::get('hello2', function (){
+//    return view('hello2',[
+//        'name'=>'Lê Hồng Minh',
+//        'year'=>2000,
+//        'school'=>'Học viện nông nghiệp',
+//        'detail'=>'không phải wibu'
+//    ]);
+//});
+
+//Route::get('sub/hello2', function (){
+//    $records = [1,2,3];
+//    return view('hello.hello2')->with('records',$records);
+//});
+
+//Route::get('hello2',function (){
+//    return view('hello2')->with('name','Lê Hồng Minh');
+//});
+
+//Route::get('hello2',function (){
+//    return view('hello2')->with([
+//        'name'=>'Lê Hồng Minh',
+//        'year'=>2000,
+//        'school'=>'Vnua'
+//    ]);
+//});
+//Route::get('layout/home',function (){
+//    return view('layout.home');
+//});
+//
+//Route::get('layout/detail',function (){
+//    return view('layout.detail');
+//});
+
+//Bài tập về nhà
+Route::get('profile',function (){
+    $name  = 'Lê Hồng Minh';
+    $year = 2000;
+    $school = 'VNUA';
+    $from = 'Hà Nam';
+    $detail = '<b>Yêu màu vàng ghét sự giả dối, biết đàn ca sáo nhị...</b><i>thích con gái tóc ngắn, biết hát quan họ,... miễn là con gái là được</i>';
+    $target = 'Ra trường có công ăn việc làm ổn định, có mức lương mơ ước 2000$';
+
+    return view('profile')->with([
+        'name'=>$name,
+        'year'=>$year,
+        'school'=>$school,
+        'from'=>$from,
+        'detail'=>$detail,
+        'target'=>$target
+    ]);
+});
+
+Route::get('list',function (){
+    $list = [
+        [
+            'name' => 'Học View trong Laravel',
+            'status' => 0
+        ],
+        [
+            'name' => 'Học Route trong Laravel',
+            'status' => 1
+        ],
+        [
+            'name' => 'Làm bài tập View trong Laravel',
+            'status' => -1
+        ],
+    ];
+
+    return view('list')->with('list',$list);
+});
+
+//=== kết thúc ===
