@@ -167,5 +167,6 @@ Route::group([
     Route::get('{task?}/complete','Frontend\TaskController@complete')->name('task.complete');
     Route::get('{task?}','Frontend\TaskController@reComplete')->name('task.reComplete');
 
+
 });
 //==ket thuc==

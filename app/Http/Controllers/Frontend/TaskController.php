@@ -14,6 +14,7 @@ class TaskController extends Controller
      */
     public function index()
     {
+        //
         return view('home');
     }
 
@@ -85,11 +86,13 @@ class TaskController extends Controller
 
     public function complete($id)
     {
+        //
         dd($id);
     }
 
     public function reComplete($id)
     {
+        //
         dd($id);
     }
 }
