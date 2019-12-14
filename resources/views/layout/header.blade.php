@@ -3,7 +3,7 @@
         <div class="navbar-header">
 
             <!-- Branding Image -->
-                Danh sách công việc
+            <div> Danh sách công việc</div>
         </div>
     </div>
 </nav>

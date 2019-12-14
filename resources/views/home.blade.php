@@ -57,7 +57,7 @@
                     <!-- Display Validation Errors -->
 
                     <!-- New Task Form -->
-                    <form action="{{ url('task')}}" method="POST" class="form-horizontal">
+                    <form action="{{ route('task.store') }}" method="POST" class="form-horizontal">
                     {{ csrf_field() }}
 
                     <!-- Task Name -->
@@ -67,7 +67,10 @@
                             <div class="col-sm-6">
                                 <input type="text" name="name" id="task-name" class="form-control"
                                        value="{{ old('task') }}">
+                                <input type="text" name="deadline1" id="task-name" class="form-control"
+                                       value="{{ old('task') }}">
                             </div>
+
                         </div>
 
                         <!-- Add Task Button -->
@@ -101,13 +104,13 @@
                             </td>
                             <!-- Task Complete Button -->
                             <td>
-                                <a href="{{ route('todo.task.complete') }}" type="submit" class="btn btn-success">
+                                <a href="{{ route('task.complete',10) }}" type="submit" class="btn btn-success">
                                     <i class="fa fa-btn fa-check"></i>Hoàn thành
                                 </a>
                             </td>
                             <!-- Task Delete Button -->
                             <td>
-                                <form action="{{ route('todo.task.delete',10) }}" method="POST">
+                                <form action="{{ route('task.destroy',10) }}" method="POST">
                                     {{ csrf_field() }}
                                     {{ method_field('DELETE') }}
 
@@ -123,13 +126,13 @@
                             </td>
                             <!-- Task Complete Button -->
                             <td>
-                                <a href="{{ route('todo.task.complete') }}" type="submit" class="btn btn-success">
+                                <a href="{{ route('task.complete',11) }}" type="submit" class="btn btn-success">
                                     <i class="fa fa-btn fa-check"></i>Hoàn thành
                                 </a>
                             </td>
                             <!-- Task Delete Button -->
                             <td>
-                                <form action="{{ route('todo.task.delete',11) }}" method="POST">
+                                <form action="{{ route('task.destroy',11) }}" method="POST">
                                     {{ csrf_field() }}
                                     {{ method_field('DELETE') }}
 
@@ -145,13 +148,13 @@
                             </td>
                             <!-- Task Complete Button -->
                             <td>
-                                <a href="{{ route('todo.task.reset') }}" type="submit" class="btn btn-success">
+                                <a href="{{ route('task.reComplete',12) }}" type="submit" class="btn btn-success">
                                     <i class="fa fa-btn fa-refresh"></i>Làm lại
                                 </a>
                             </td>
                             <!-- Task Delete Button -->
                             <td>
-                                <form action="{{ route('todo.task.delete',12) }}" method="POST">
+                                <form action="{{ route('task.destroy',12) }}" method="POST">
                                     {{ csrf_field() }}
                                     {{ method_field('DELETE') }}
 
