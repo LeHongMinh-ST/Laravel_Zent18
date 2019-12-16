@@ -164,7 +164,7 @@ Route::group([
     Route::put('{task?}','Frontend\TaskController@update')->name('task.update');
     Route::get('{task?}/edit','Frontend\TaskController@edit')->name('task.edit');
     Route::delete('{task?}','Frontend\TaskController@destroy')->name('task.destroy');
-    Route::post('{task?}/complete','Frontend\TaskController@complete')->name('task.complete');
-    Route::post('{task?}','Frontend\TaskController@reComplete')->name('task.reComplete');
+    Route::get('{task?}/complete','Frontend\TaskController@complete')->name('task.complete');
+    Route::get('{task?}','Frontend\TaskController@reComplete')->name('task.reComplete');
 });
 //==ket thuc==
