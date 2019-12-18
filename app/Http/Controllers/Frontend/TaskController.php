@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Frontend;
-
+use App\Task;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -15,7 +15,12 @@ class TaskController extends Controller
     public function index()
     {
         //
-        return view('home');
+        $tasks = Task::all();
+//        $tasks = Task::where('status',1)
+//            ->orderBy('deadline','desc')
+//            ->take(1)
+//            ->get();
+        return view('home')->with(['tasks' => $tasks]);
     }
 
     /**
@@ -36,7 +41,15 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request->all());
+        $task = new Task();
+        $data =$request->all();
+        $task->name = $data['name'];
+        $task->contents= $data['content'];
+        $task->status = '1';
+        $task->deadline = $data['deadline'];
+        $task->save();
+
+        return redirect()->route('task.index');
     }
 
     /**
@@ -47,7 +60,10 @@ class TaskController extends Controller
      */
     public function show($id)
     {
-        //
+//        $task = Task::find($id);
+        $task = Task::where('id', $id)->first();
+//        $task = Task::findOrFail($id);
+        dd($task);
     }
 
     /**
@@ -81,7 +97,9 @@ class TaskController extends Controller
      */
     public function destroy($id)
     {
-        dd($id);
+        $task = Task::find($id);
+        $task->delete();
+        return redirect()->route('task.index');
     }
 
     public function complete($id)

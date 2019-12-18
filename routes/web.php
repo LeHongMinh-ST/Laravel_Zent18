@@ -11,7 +11,7 @@
 |
 */
 
-Route::get('/', 'HomeController@index');
+Route::get('/', 'Frontend\TaskController@index');
 
 //Route::get('user/{id?}', function ($id = Null) {
 //    if ($id == NULL) {
@@ -159,12 +159,12 @@ Route::group([
 ],function (){
     Route::get('/','Frontend\TaskController@index')->name('task.index');
     Route::get('create','Frontend\TaskController@create')->name('task.create');
-    Route::post('store','Frontend\TaskController@store')->name('task.store');
+    Route::post('/','Frontend\TaskController@store')->name('task.store');
     Route::get('{task?}','Frontend\TaskController@show')->name('task.show');
     Route::put('{task?}','Frontend\TaskController@update')->name('task.update');
     Route::get('{task?}/edit','Frontend\TaskController@edit')->name('task.edit');
     Route::delete('{task?}','Frontend\TaskController@destroy')->name('task.destroy');
     Route::get('{task?}/complete','Frontend\TaskController@complete')->name('task.complete');
-    Route::get('{task?}','Frontend\TaskController@reComplete')->name('task.reComplete');
+    Route::get('{task?}/reComplete','Frontend\TaskController@reComplete')->name('task.reComplete');
 });
 //==ket thuc==
