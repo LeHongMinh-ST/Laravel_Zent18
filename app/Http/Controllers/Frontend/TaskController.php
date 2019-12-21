@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Frontend;
+
 use App\Task;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -30,7 +31,7 @@ class TaskController extends Controller
      */
     public function create()
     {
-        //
+        return view('create');
     }
 
     /**
@@ -42,11 +43,12 @@ class TaskController extends Controller
     public function store(Request $request)
     {
         $task = new Task();
-        $data =$request->all();
+        $data = $request->all();
         $task->name = $data['name'];
-        $task->contents= $data['content'];
-        $task->status = '1';
+        $task->contents = $data['content'];
+        $task->status = $data['status'];
         $task->deadline = $data['deadline'];
+        $task->priority = $data['priority'];
         $task->save();
 
         return redirect()->route('task.index');
@@ -60,10 +62,10 @@ class TaskController extends Controller
      */
     public function show($id)
     {
-//        $task = Task::find($id);
-        $task = Task::where('id', $id)->first();
+        $task = Task::find($id);
+//        $task = Task::where('id', $id)->first();
 //        $task = Task::findOrFail($id);
-        dd($task);
+        return view('detail')->with(['task'=>$task]);
     }
 
     /**
@@ -74,7 +76,8 @@ class TaskController extends Controller
      */
     public function edit($id)
     {
-        //
+        $task = Task::find($id);
+        return view('update')->with(['task'=>$task]);
     }
 
     /**
@@ -86,7 +89,16 @@ class TaskController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $task = Task::find($id);
+        $data = $request->all();
+        $task->name = $data['name'];
+        $task->contents = $data['content'];
+        $task->status = $data['status'];
+        $task->deadline = $data['deadline'];
+        $task->priority = $data['priority'];
+        $task->save();
+
+        return redirect()->route('task.index');
     }
 
     /**
@@ -104,13 +116,17 @@ class TaskController extends Controller
 
     public function complete($id)
     {
-        //
-        dd($id);
+        $task = Task::find($id);
+        $task->status = 2;
+        $task->save();
+        return redirect()->route('task.index');
     }
 
     public function reComplete($id)
     {
-        //
-        dd($id);
+        $task = Task::find($id);
+        $task->status = 1;
+        $task->save();
+        return redirect()->route('task.index');
     }
 }

@@ -28,7 +28,6 @@ class AppServiceProvider extends ServiceProvider
         $arr = ['abc','def'
         ];
         View::share([
-            'username'=>'Lê Hồng Minh',
             'arr'=>$arr
         ]);
 

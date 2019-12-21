@@ -3,7 +3,9 @@
         <div class="navbar-header">
 
             <!-- Branding Image -->
-            <div> Danh sách công việc</div>
+            <a class="navbar-brand" href="{{ route('task.index') }}">
+                Danh sách công việc
+            </a>
         </div>
     </div>
 </nav>
