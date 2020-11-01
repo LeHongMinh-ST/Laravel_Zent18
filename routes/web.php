@@ -159,9 +159,9 @@ Route::group([
 ],function (){
     Route::get('/','Frontend\TaskController@index')->name('task.index');
     Route::get('create','Frontend\TaskController@create')->name('task.create');
-    Route::post('/','Frontend\TaskController@store')->name('task.store');
+    Route::post('/store','Frontend\TaskController@store')->name('task.store');
     Route::get('{task}','Frontend\TaskController@show')->name('task.show');
-    Route::put('{task}','Frontend\TaskController@update')->name('task.update');
+    Route::put('/update/{task}','Frontend\TaskController@update')->name('task.update');
     Route::get('{task}/edit','Frontend\TaskController@edit')->name('task.edit');
     Route::delete('{task}','Frontend\TaskController@destroy')->name('task.destroy');
     Route::get('{task}/complete','Frontend\TaskController@complete')->name('task.complete');

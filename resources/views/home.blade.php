@@ -38,7 +38,91 @@
 @section('script')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+{{--<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>--}}
+<script>
+    $(document).ready(function (){
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+       $('#btnAddTask').click(function (e){
+           e.preventDefault();
+          $('#modalAddTask').modal('show');
+       });
+
+       $('#btnStoreTask').click(function (e){
+           e.preventDefault();
+
+           let data = $('#frmAddTask').serialize();
+
+           $.ajax({
+               type:'post',
+               url: '/task/store',
+               data: data,
+               success: function (res){
+                    if(!res.error){
+                        console.log(res.message)
+                        toastr.success(res.message);
+                        $('#modalAddTask').modal('hide');
+                        location.reload();
+                    }else {
+                        console.log(res.message)
+                        toastr.error(res.message);
+                    }
+               }
+           })
+       });
+
+       $('.btn-edit').click(function (e){
+           e.preventDefault();
+
+           let id = $(this).attr('data-id');
+
+           $.ajax({
+               type:'get',
+               url:'/task/'+id+'/edit',
+               success: function (res){
+                   if(!res.error){
+                       $('#task-name-edit').val(res.task.name);
+                       $('#status-edit').val(res.task.status);
+                       $('#frmEditTask').attr('data-id',id);
+                       $('#modalEditTask').modal('show');
+                   }
+               }
+           })
+       });
+
+        $('#btnUpdateTask').click(function (e){
+            e.preventDefault();
+
+            let data = $('#frmEditTask').serialize();
+            let id = $('#frmEditTask').attr('data-id');
+            $.ajax({
+                type:'put',
+                url: '/task/update/'+id,
+                data: data,
+                success: function (res){
+                    if(!res.error){
+                        console.log(res.message)
+                        toastr.success(res.message);
+                        $('#modalEditTask').modal('hide');
+                        location.reload();
+                    }else {
+                        console.log(res.message)
+                        toastr.error(res.message);
+                    }
+                }
+            })
+        });
+
+    });
+</script>
 @endsection
+
 
 <!--Content-->
 @section('title')
@@ -52,6 +136,10 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     Danh sách công việc hiện tại
+                </div>
+
+                <div>
+                    <a href="" class="btn btn-success" id="btnAddTask">Thêm mới</a>
                 </div>
 
                 <div class="panel-body">
@@ -117,11 +205,11 @@
                                 </td>
 
                                 <td>
-                                    <form action="{{ route('task.edit',$task->id) }}" method="GET">
-                                        <button type="submit" class="btn btn-primary">
+
+                                        <button type="submit" class="btn btn-primary btn-edit" data-id="{{$task->id}}">
                                             <i class="fa fa-btn fa-edit"></i>Chỉnh sửa
                                         </button>
-                                    </form>
+
                                 </td>
 
                                 <td>
@@ -138,6 +226,106 @@
                         @endforeach
                         </tbody>
                     </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+@endsection
+
+@section('modals')
+    <div class="modal fade" id="modalAddTask" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" id="frmAddTask">
+                    <!-- Task Name -->
+                        <div class="form-group">
+                            <label for="task-name" class="col-sm-3 control-label">Tên công việc</label>
+
+                            <div class="col-sm-6">
+                                <input type="text" name="name" id="task-name" class="form-control"
+                                       value="{{ old('task') }}">
+                            </div>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="task-status" class="col-sm-3 control-label">Trạng thái</label>
+
+                            <div class="col-sm-6">
+                                <select name="status" id="" class="form-control">
+                                    <option value="0" >Chưa làm</option>
+                                    <option value="1">Đang làm</option>
+                                    <option value="-1" >Không làm</option>
+                                    <option value="2">Đã làm xong</option>
+                                </select>
+                            </div>
+                        </div>
+
+
+
+                        <!-- Add Task Button -->
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="btnStoreTask">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalEditTask" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" id="frmEditTask">
+                        <!-- Task Name -->
+                        <div class="form-group">
+                            <label for="task-name" class="col-sm-3 control-label">Tên công việc</label>
+
+                            <div class="col-sm-6">
+                                <input type="text" name="name" id="task-name-edit" class="form-control"
+                                       value="{{ old('task') }}">
+                            </div>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="task-status" class="col-sm-3 control-label">Trạng thái</label>
+
+                            <div class="col-sm-6">
+                                <select name="status" id="status-edit" class="form-control">
+                                    <option value="0" >Chưa làm</option>
+                                    <option value="1">Đang làm</option>
+                                    <option value="-1" >Không làm</option>
+                                    <option value="2">Đã làm xong</option>
+                                </select>
+                            </div>
+                        </div>
+
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="btnUpdateTask">Save changes</button>
                 </div>
             </div>
         </div>

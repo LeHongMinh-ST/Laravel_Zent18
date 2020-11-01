@@ -42,16 +42,32 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-        $task = new Task();
-        $data = $request->all();
-        $task->name = $data['name'];
-        $task->contents = $data['content'];
-        $task->status = $data['status'];
-        $task->deadline = $data['deadline'];
-        $task->priority = $data['priority'];
-        $task->save();
+        try {
+            $task = new Task();
+            $data = $request->all();
+            $task->name = $data['name'];
 
-        return redirect()->route('task.index');
+            $task->status = $data['status'];
+
+            $success = $task->save();
+
+            if($success){
+                return response()->json([
+                    'error'=>false,
+                    'message'=>"Thêm mới thành công",
+                ]);
+            }
+
+        }catch (\Exception $exception){
+            $message = "Thêm mới không thành công";
+            return response()->json([
+               'error'=>true,
+                'message'=>$exception->getMessage(),
+            ]);
+        }
+
+
+//        return redirect()->route('task.index');
     }
 
     /**
@@ -77,7 +93,10 @@ class TaskController extends Controller
     public function edit($id)
     {
         $task = Task::find($id);
-        return view('update')->with(['task'=>$task]);
+        return response()->json([
+            'error'=>false,
+            'task'=>$task,
+        ]);
     }
 
     /**
@@ -89,16 +108,29 @@ class TaskController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $task = Task::find($id);
-        $data = $request->all();
-        $task->name = $data['name'];
-        $task->contents = $data['content'];
-        $task->status = $data['status'];
-        $task->deadline = $data['deadline'];
-        $task->priority = $data['priority'];
-        $task->save();
+        try {
+            $task = Task::find($id);
+            $data = $request->all();
+            $task->name = $data['name'];
 
-        return redirect()->route('task.index');
+            $task->status = $data['status'];
+
+            $success = $task->save();
+
+            if($success){
+                return response()->json([
+                    'error'=>false,
+                    'message'=>"Cập nhật thành công",
+                ]);
+            }
+
+        }catch (\Exception $exception){
+            $message = "Cập nhật không thành công";
+            return response()->json([
+                'error'=>true,
+                'message'=>$exception->getMessage(),
+            ]);
+        }
     }
 
     /**
