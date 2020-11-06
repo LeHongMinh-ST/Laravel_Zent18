@@ -46,9 +46,7 @@ class TaskController extends Controller
             $task = new Task();
             $data = $request->all();
             $task->name = $data['name'];
-
             $task->status = $data['status'];
-
             $success = $task->save();
 
             if($success){
@@ -58,11 +56,11 @@ class TaskController extends Controller
                 ]);
             }
 
-        }catch (\Exception $exception){
+        }catch (\Exception $e){
             $message = "Thêm mới không thành công";
             return response()->json([
                'error'=>true,
-                'message'=>$exception->getMessage(),
+                'message'=>$e->getMessage(),
             ]);
         }
 
@@ -112,9 +110,7 @@ class TaskController extends Controller
             $task = Task::find($id);
             $data = $request->all();
             $task->name = $data['name'];
-
             $task->status = $data['status'];
-
             $success = $task->save();
 
             if($success){
@@ -141,9 +137,24 @@ class TaskController extends Controller
      */
     public function destroy($id)
     {
-        $task = Task::find($id);
-        $task->delete();
-        return redirect()->route('task.index');
+        try {
+            $task = Task::find($id);
+            $success = $task->delete();
+
+            if($success){
+                return response()->json([
+                    'error'=>false,
+                    'message'=>"Đã xóa thành công",
+                ]);
+            }
+
+        }catch (\Exception $e){
+            $message = "Xóa không thành công";
+            return response()->json([
+                'error'=>true,
+                'message'=>$e->getMessage(),
+            ]);
+        }
     }
 
     public function complete($id)

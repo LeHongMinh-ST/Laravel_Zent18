@@ -40,87 +40,123 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-{{--<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>--}}
-<script>
-    $(document).ready(function (){
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-
-       $('#btnAddTask').click(function (e){
-           e.preventDefault();
-          $('#modalAddTask').modal('show');
-       });
-
-       $('#btnStoreTask').click(function (e){
-           e.preventDefault();
-
-           let data = $('#frmAddTask').serialize();
-
-           $.ajax({
-               type:'post',
-               url: '/task/store',
-               data: data,
-               success: function (res){
-                    if(!res.error){
-                        console.log(res.message)
-                        toastr.success(res.message);
-                        $('#modalAddTask').modal('hide');
-                        location.reload();
-                    }else {
-                        console.log(res.message)
-                        toastr.error(res.message);
-                    }
-               }
-           })
-       });
-
-       $('.btn-edit').click(function (e){
-           e.preventDefault();
-
-           let id = $(this).attr('data-id');
-
-           $.ajax({
-               type:'get',
-               url:'/task/'+id+'/edit',
-               success: function (res){
-                   if(!res.error){
-                       $('#task-name-edit').val(res.task.name);
-                       $('#status-edit').val(res.task.status);
-                       $('#frmEditTask').attr('data-id',id);
-                       $('#modalEditTask').modal('show');
-                   }
-               }
-           })
-       });
-
-        $('#btnUpdateTask').click(function (e){
-            e.preventDefault();
-
-            let data = $('#frmEditTask').serialize();
-            let id = $('#frmEditTask').attr('data-id');
-            $.ajax({
-                type:'put',
-                url: '/task/update/'+id,
-                data: data,
-                success: function (res){
-                    if(!res.error){
-                        console.log(res.message)
-                        toastr.success(res.message);
-                        $('#modalEditTask').modal('hide');
-                        location.reload();
-                    }else {
-                        console.log(res.message)
-                        toastr.error(res.message);
-                    }
+    {{--<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>--}}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.9.0/dist/sweetalert2.all.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
-            })
-        });
+            });
 
-    });
-</script>
+            $('#btnAddTask').click(function (e) {
+                e.preventDefault();
+                $('#modalAddTask').modal('show');
+            });
+
+            $('#btnStoreTask').click(function (e) {
+                e.preventDefault();
+
+                let data = $('#frmAddTask').serialize();
+
+                $.ajax({
+                    type: 'post',
+                    url: '/task/store',
+                    data: data,
+                    success: function (res) {
+                        if (!res.error) {
+                            console.log(res.message);
+                            $('#modalAddTask').modal('hide');
+                            location.reload();
+                        } else {
+                            console.log(res.message);
+                        }
+                    }
+                })
+            });
+
+            $('.btn-edit').click(function (e) {
+                e.preventDefault();
+
+                let id = $(this).attr('data-id');
+
+                $.ajax({
+                    type: 'get',
+                    url: '/task/' + id + '/edit',
+                    success: function (res) {
+                        if (!res.error) {
+                            $('#task-name-edit').val(res.task.name);
+                            $('#status-edit').val(res.task.status);
+                            $('#frmEditTask').attr('data-id', id);
+                            $('#modalEditTask').modal('show');
+                        }
+                    }
+                })
+            });
+            $('#btnUpdateTask').click(function (e) {
+                e.preventDefault();
+
+                let data = $('#frmEditTask').serialize();
+                let id = $('#frmEditTask').attr('data-id');
+                $.ajax({
+                    type: 'put',
+                    url: '/task/update/' + id,
+                    data: data,
+                    success: function (res) {
+                        if (!res.error) {
+                            console.log(res.message)
+                            toastr.success(res.message);
+                            $('#modalEditTask').modal('hide');
+                            location.reload();
+                        } else {
+                            console.log(res.message)
+                            toastr.error(res.message);
+                        }
+                    }
+                })
+            });
+
+            $('.btn-delete').click(function (e) {
+                e.preventDefault();
+
+                let id = $(this).attr('data-id');
+
+                Swal.fire({
+                    title: 'Bạn có chắc chắn muốn xóa?',
+                    text: "Dữ liệu xóa không thể phục hồi!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Xóa',
+                    cancelButtonText: 'Đóng',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            type: 'delete',
+                            url:'task/'+id,
+                            success:function (res){
+                                if(!res.error){
+                                    Swal.fire(
+                                        'Đã xóa!',
+                                        res.message,
+                                        'success'
+                                    );
+                                    location.reload();
+                                }else {
+                                    console.log(res.message);
+                                }
+                            }
+                        });
+                    }
+                })
+
+
+            });
+
+        });
+    </script>
 @endsection
 
 
@@ -148,7 +184,7 @@
                         <th>Tên công việc</th>
                         <th>Trạng thái</th>
                         <th>Độ ưu tiên</th>
-                        <th> </th>
+                        <th></th>
                         </thead>
                         <tbody>
                         @foreach($tasks as $task)
@@ -186,11 +222,13 @@
                                 <!-- Task Complete Button -->
                                 <td>
                                     @if($task->status == 0 || $task->status == 1)
-                                        <a href="{{ route('task.complete',$task->id) }}" type="submit" class="btn btn-success">
+                                        <a href="{{ route('task.complete',$task->id) }}" type="submit"
+                                           class="btn btn-success">
                                             <i class="fa fa-btn fa-check"></i>Hoàn thành
                                         </a>
                                     @elseif($task->status == 2)
-                                        <a href="{{ route('task.reComplete',$task->id) }}" type="submit" class="btn btn-success">
+                                        <a href="{{ route('task.reComplete',$task->id) }}" type="submit"
+                                           class="btn btn-success">
                                             <i class="fa fa-btn fa-redo"></i>Làm lại
                                         </a>
                                     @endif
@@ -205,22 +243,16 @@
                                 </td>
 
                                 <td>
-
-                                        <button type="submit" class="btn btn-primary btn-edit" data-id="{{$task->id}}">
-                                            <i class="fa fa-btn fa-edit"></i>Chỉnh sửa
-                                        </button>
+                                    <button type="submit" class="btn btn-primary btn-edit" data-id="{{$task->id}}">
+                                        <i class="fa fa-btn fa-edit"></i>Chỉnh sửa
+                                    </button>
 
                                 </td>
 
                                 <td>
-                                    <form action="{{ route('task.destroy',$task->id) }}" method="POST">
-                                        {{ csrf_field() }}
-                                        {{ method_field('DELETE') }}
-
-                                        <button type="submit" class="btn btn-danger">
-                                            <i class="fa fa-btn fa-trash"></i>Xoá
-                                        </button>
-                                    </form>
+                                    <button type="submit" class="btn btn-danger btn-delete" data-id="{{$task->id}}">
+                                        <i class="fa fa-btn fa-trash"></i>Xoá
+                                    </button>
                                 </td>
                             </tr>
                         @endforeach
@@ -234,24 +266,25 @@
 @endsection
 
 @section('modals')
-    <div class="modal fade" id="modalAddTask" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal fade" id="modalAddTask" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+         aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                    <h5 class="modal-title" id="exampleModalLongTitle">Thêm công việc</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
                     <form class="form-horizontal" id="frmAddTask">
-                    <!-- Task Name -->
+                        <!-- Task Name -->
                         <div class="form-group">
                             <label for="task-name" class="col-sm-3 control-label">Tên công việc</label>
 
                             <div class="col-sm-6">
                                 <input type="text" name="name" id="task-name" class="form-control"
-                                       value="{{ old('task') }}">
+                                       value="">
                             </div>
 
                         </div>
@@ -262,14 +295,13 @@
 
                             <div class="col-sm-6">
                                 <select name="status" id="" class="form-control">
-                                    <option value="0" >Chưa làm</option>
+                                    <option value="0">Chưa làm</option>
                                     <option value="1">Đang làm</option>
-                                    <option value="-1" >Không làm</option>
+                                    <option value="-1">Không làm</option>
                                     <option value="2">Đã làm xong</option>
                                 </select>
                             </div>
                         </div>
-
 
 
                         <!-- Add Task Button -->
@@ -284,7 +316,8 @@
         </div>
     </div>
 
-    <div class="modal fade" id="modalEditTask" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal fade" id="modalEditTask" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+         aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -312,9 +345,9 @@
 
                             <div class="col-sm-6">
                                 <select name="status" id="status-edit" class="form-control">
-                                    <option value="0" >Chưa làm</option>
+                                    <option value="0">Chưa làm</option>
                                     <option value="1">Đang làm</option>
-                                    <option value="-1" >Không làm</option>
+                                    <option value="-1">Không làm</option>
                                     <option value="2">Đã làm xong</option>
                                 </select>
                             </div>
